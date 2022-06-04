@@ -6,6 +6,11 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+
+struct ChatUser {
+    let uid, email, profileImageUrl: String
+}
 
 struct MainMessageView: View {
     @State var shouldShowLogOutOptions = false
@@ -15,8 +20,6 @@ struct MainMessageView: View {
     var body: some View {
         NavigationView {
             VStack{
-                Text("Current user id: \(vm.errorMessage)")
-                
                 // custom nav bar
                 customNavBar
                 // messages view
@@ -29,11 +32,20 @@ struct MainMessageView: View {
     
     private var customNavBar: some View {
         HStack {
-            Image(systemName: "person.fill")
-                .font(.system(size: 34, weight: .heavy))
+            WebImage(url: URL(string: vm.chatUser?.profileImageUrl ?? ""))
+                .resizable()
+                .scaledToFill()
+                .frame(width: 50, height: 50)
+                .clipped()
+                .cornerRadius(50)
+                .overlay(RoundedRectangle(cornerRadius: 44)
+                    .stroke(Color(uiColor: .label), lineWidth: 1)
+                )
+                .shadow(radius: 5)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("Username")
+                let email = vm.chatUser?.email.replacingOccurrences(of: "@gmail.com", with: "") ?? ""
+                Text(email)
                     .font(.system(size: 24, weight: .bold))
                 
                 HStack {
@@ -80,7 +92,7 @@ struct MainMessageView: View {
                     HStack {
                         Image(systemName: "person.fill")
                             .font(.system(size: 32))
-                            .padding()
+                            .padding(8)
                             .overlay(RoundedRectangle(cornerRadius: 44)
                                 .stroke(Color(uiColor: .label), lineWidth: 1)
                             )
@@ -128,34 +140,40 @@ struct MainMessageView: View {
 struct MainMessageView_Previews: PreviewProvider {
     static var previews: some View {
         MainMessageView()
-            .preferredColorScheme(.dark)
-        
-        MainMessageView()
     }
 }
 
 class MainMessagesViewModel: ObservableObject {
     @Published var errorMessage = ""
+    @Published var chatUser: ChatUser?
     
     init() {
         fetchCurrentUser()
     }
     
     private func fetchCurrentUser() {
-        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
-        
-        errorMessage = "\(uid)"
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else {
+            self.errorMessage = "Could not find firebase uid"
+            return
+        }
         
         FirebaseManager.shared.firestore.collection("users").document(uid).getDocument { snapshot, error in
             if let error = error {
-                print("Failed to fetch current user:", error)
+                self.errorMessage = "Failed to fetch current user: \(error)"
                 return
             }
             
-            guard let data = snapshot?.data() else { return }
+            self.errorMessage = "123"
             
-            print(data)
-        
+            guard let data = snapshot?.data() else {
+                self.errorMessage = "No data found"
+                return
+            }
+            
+            let uid = data["uid"] as? String ?? ""
+            let email = data["email"] as? String ?? ""
+            let profileImageUrl = data["profileImageUrl"] as? String ?? ""
+            self.chatUser = ChatUser(uid: uid, email: email.replacingOccurrences(of: "@gmail.com", with: ""), profileImageUrl: profileImageUrl)
         }
     }
 }
