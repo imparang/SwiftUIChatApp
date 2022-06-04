@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
+
 class FirebaseManager: NSObject {
     let auth: Auth
     var storage: Storage
