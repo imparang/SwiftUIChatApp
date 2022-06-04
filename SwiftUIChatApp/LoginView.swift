@@ -8,20 +8,19 @@
 import SwiftUI
 import Firebase
 import FirebaseStorage
-
+import FirebaseFirestore
 
 class FirebaseManager: NSObject {
     let auth: Auth
     var storage: Storage
+    let firestore: Firestore
     
     static let shared = FirebaseManager()
     
     override init() {
-//        FirebaseApp.configure()
-        
         auth = Auth.auth()
         storage = Storage.storage()
-        
+        firestore = Firestore.firestore()
         super.init()
     }
 }
@@ -168,8 +167,28 @@ struct LoginView: View {
                 
                 loginStatusMessage = "Successfully stored image with url: \(url?.absoluteString ?? "")"
                 print(url?.absoluteString ?? "url: ~")
+                
+                
+                guard let url = url else { return }
+                storeUserInformation(imageProfileUrl: url)
             }
         }
+    }
+    
+    private func storeUserInformation(imageProfileUrl: URL) {
+        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
+        
+        let userData = ["email": self.email, "uid": uid, "profileImageUrl": imageProfileUrl.absoluteString]
+        FirebaseManager.shared.firestore.collection("users")
+            .document(uid).setData(userData) { error in
+                if let error = error {
+                    print(error)
+                    loginStatusMessage = "\(error)"
+                    return
+                }
+                
+                print("Success")
+            }
     }
 }
 
