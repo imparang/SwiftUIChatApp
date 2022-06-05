@@ -8,10 +8,6 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-struct ChatUser {
-    let uid, email, profileImageUrl: String
-}
-
 struct MainMessageView: View {
     @State var shouldShowLogOutOptions = false
     
@@ -70,7 +66,7 @@ struct MainMessageView: View {
         .padding()
         .confirmationDialog("Settings", isPresented: $shouldShowLogOutOptions, titleVisibility: .visible) {
             Button(role: .destructive) {
-                
+                vm.handleSignOut()
             } label: {
                 Text("Sign Out")
             }
@@ -82,6 +78,12 @@ struct MainMessageView: View {
             }
         } message: {
             Text("What do you want to do?")
+        }
+        .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut, onDismiss: nil) {
+            LoginView(didCompleteLoginProcess: {
+                vm.isUserCurrentlyLoggedOut = false
+                vm.fetchCurrentUser()
+            })
         }
     }
     
@@ -117,9 +119,11 @@ struct MainMessageView: View {
         }
     }
     
+    @State var shouldShowNewMessageScreen = false
+    
     private var newMessageButton: some View {
         Button {
-            
+            shouldShowNewMessageScreen.toggle()
         } label: {
             HStack {
                 Spacer()
@@ -134,46 +138,14 @@ struct MainMessageView: View {
             .padding(.horizontal)
             .shadow(radius: 15)
         }
+        .fullScreenCover(isPresented: $shouldShowNewMessageScreen, onDismiss: nil) {
+            NewMessageView()
+        }
     }
 }
 
 struct MainMessageView_Previews: PreviewProvider {
     static var previews: some View {
         MainMessageView()
-    }
-}
-
-class MainMessagesViewModel: ObservableObject {
-    @Published var errorMessage = ""
-    @Published var chatUser: ChatUser?
-    
-    init() {
-        fetchCurrentUser()
-    }
-    
-    private func fetchCurrentUser() {
-        guard let uid = FirebaseManager.shared.auth.currentUser?.uid else {
-            self.errorMessage = "Could not find firebase uid"
-            return
-        }
-        
-        FirebaseManager.shared.firestore.collection("users").document(uid).getDocument { snapshot, error in
-            if let error = error {
-                self.errorMessage = "Failed to fetch current user: \(error)"
-                return
-            }
-            
-            self.errorMessage = "123"
-            
-            guard let data = snapshot?.data() else {
-                self.errorMessage = "No data found"
-                return
-            }
-            
-            let uid = data["uid"] as? String ?? ""
-            let email = data["email"] as? String ?? ""
-            let profileImageUrl = data["profileImageUrl"] as? String ?? ""
-            self.chatUser = ChatUser(uid: uid, email: email.replacingOccurrences(of: "@gmail.com", with: ""), profileImageUrl: profileImageUrl)
-        }
     }
 }
