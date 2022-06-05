@@ -22,6 +22,7 @@
 		F228EF88284CE28A00443617 /* NewMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F228EF87284CE28A00443617 /* NewMessageView.swift */; };
 		F228EF8A284CE5AA00443617 /* NewMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F228EF89284CE5AA00443617 /* NewMessageViewModel.swift */; };
 		F228EF8C284CE6C400443617 /* MainMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F228EF8B284CE6C400443617 /* MainMessageViewModel.swift */; };
+		F228EF8F284CF68000443617 /* ChatLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F228EF8E284CF68000443617 /* ChatLogView.swift */; };
 		F25AD745284B9874007EA441 /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25AD744284B9874007EA441 /* ChatUser.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		F228EF87284CE28A00443617 /* NewMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageView.swift; sourceTree = "<group>"; };
 		F228EF89284CE5AA00443617 /* NewMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageViewModel.swift; sourceTree = "<group>"; };
 		F228EF8B284CE6C400443617 /* MainMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMessageViewModel.swift; sourceTree = "<group>"; };
+		F228EF8E284CF68000443617 /* ChatLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogView.swift; sourceTree = "<group>"; };
 		F25AD744284B9874007EA441 /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +101,7 @@
 		F2139D0D284B36BD0037CB6C /* MainMessage */ = {
 			isa = PBXGroup;
 			children = (
+				F228EF8D284CF67700443617 /* Chat */,
 				F228EF86284CE27C00443617 /* NewMessage */,
 				F2139D0E284B36C90037CB6C /* MainMessageView.swift */,
 				F228EF8B284CE6C400443617 /* MainMessageViewModel.swift */,
@@ -129,6 +132,14 @@
 				F228EF89284CE5AA00443617 /* NewMessageViewModel.swift */,
 			);
 			path = NewMessage;
+			sourceTree = "<group>";
+		};
+		F228EF8D284CF67700443617 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				F228EF8E284CF68000443617 /* ChatLogView.swift */,
+			);
+			path = Chat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F228EF8C284CE6C400443617 /* MainMessageViewModel.swift in Sources */,
+				F228EF8F284CF68000443617 /* ChatLogView.swift in Sources */,
 				F25AD745284B9874007EA441 /* ChatUser.swift in Sources */,
 				F2139CFE284B1D0C0037CB6C /* ImagePicker.swift in Sources */,
 				F228EF88284CE28A00443617 /* NewMessageView.swift in Sources */,
